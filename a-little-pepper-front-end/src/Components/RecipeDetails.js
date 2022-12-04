@@ -35,9 +35,7 @@ export default function RecipeDetails() {
     setProfile({ ["uid"]: user.uid, ["cal"]: 100, ["fat"]: 10, ["carb"]: 5, ["protein"]: 10 })
     console.log(profile)
   };
-  // const navigate = useNavigate();
   useEffect(() => {
-    // axios.get(`${ACCESS_POINT}/findByIngredients?apiKey=${API_KEY}&ingredients=${input1}`)
 
     axios
       .get(
@@ -57,24 +55,32 @@ export default function RecipeDetails() {
       .get(
         `${ACCESS_POINT}/${id}/analyzedInstructions?apiKey=${API_KEY}`
       )
-      .then((res) => {setInstructions(res.data)
-      setDirections(res.data[0].steps[0].step)
+      .then((res) => {
+        setInstructions(res.data)
+        setDirections(res.data[0].steps[0].step)
       })
       .catch((error) => console.error(error));
 
-      axios
+    axios
       .get(
         `${ACCESS_POINT}/${id}/priceBreakdownWidget.json?apiKey=${API_KEY}`
       )
-      .then((res) => setPrices(res.data))
+      .then((res) => setPrices(res.data.ingredients))
       .catch((error) => console.error(error));
 
   }, []);
 
   let ingredient = ingredients.ingredients;
-  let price = prices.ingredients
+  let price = prices;
 
-  console.log(price);
+  let priceSum = 0;
+  let priceArr = price.map((item) => Number(item.price))
+  priceArr.forEach(amount => {
+    priceSum += amount;
+    return priceSum;
+  })
+
+  
 
   return (
     <article className="RecipeDetails">
@@ -84,8 +90,8 @@ export default function RecipeDetails() {
       <br></br>
       <br></br>
       <span>
-        <h3>{nutrition.calories}ilo calories</h3>
-        <h6>*Note: 1000kilo calories = 1 calorie</h6>
+        <h3>Calories: {nutrition.calories}al</h3>
+        <h6>*Note: kal is a unit of energy. To ease calculations, energy is expressed in 1000-calorie units known as kilocalories. That is, 1 Calorie is equivalent to 1 kilocalorie; the capital C in Calories denotes kcal on food labels, calories and kilocalories are used interchangeably to mean the same thing. For example: 1kal is equivalent to 1 calorie.</h6>
         <h3>Fat: {nutrition.fat}</h3>
         <h3>Carbohydrates: {nutrition.carbs}</h3>
         <h3>Protein: {nutrition.protein}</h3>
@@ -100,7 +106,7 @@ export default function RecipeDetails() {
               <Card.Title>{item.amount.us.value} {item.amount.us.unit}  of {item.name} </Card.Title>
             </Card>
           )
-        } )}
+        })}
       </article>
       <br></br>
       <br></br>
@@ -112,15 +118,17 @@ export default function RecipeDetails() {
               <Card.Title>{item.name} : ${Math.round(10 * item.price) / 100} </Card.Title>
             </Card>
           )
-        } )}
+        })}
+
+        <h3>Total Price: ${Math.round(priceSum * 10) / 100}</h3>
       </article>
       <br></br>
       <br></br>
-        <h1>Instructions</h1>
+      <h1>Instructions</h1>
       <article>
-      <Card bg="warning" variant="light" style={{ alignItems: "center" }}>
-              <Card.Title>{directions}</Card.Title>
-            </Card>
+        <Card bg="warning" variant="light" style={{ alignItems: "center" }}>
+          <Card.Title>{directions}</Card.Title>
+        </Card>
       </article>
       <br></br>
       <div
