@@ -120,7 +120,7 @@ export default function RecipeDetails() {
           )
         })}
 
-        <h3>Total Price: ${priceSum / 10}</h3>
+        <h3>Total Price: ${Math.round(priceSum * 10) / 100}</h3>
       </article>
       <br></br>
       <br></br>
