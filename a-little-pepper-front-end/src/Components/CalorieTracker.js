@@ -40,7 +40,7 @@ export default function CalorieTracker() {
             striped
             animated
             variant="success"
-            now={40}
+            now={1000/2000 * 100}
             label={`Calories`}
           />
 
